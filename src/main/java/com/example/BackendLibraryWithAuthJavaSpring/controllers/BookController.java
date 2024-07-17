@@ -3,6 +3,7 @@ package com.example.BackendLibraryWithAuthJavaSpring.controllers;
 import com.example.BackendLibraryWithAuthJavaSpring.domain.Book;
 import com.example.BackendLibraryWithAuthJavaSpring.dtos.BookDTO;
 import com.example.BackendLibraryWithAuthJavaSpring.repositories.BookRepository;
+import org.apache.coyote.Response;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/books")
@@ -29,4 +31,15 @@ public class BookController {
         BeanUtils.copyProperties(bookDTO, book);
         return ResponseEntity.status(HttpStatus.CREATED).body(bookRepository.save(book));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteBookById(@PathVariable(value = "id") String id) {
+        Optional<Book> book = bookRepository.findById(id);
+        if(book.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Book not found");
+        }
+        bookRepository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Book deleted sucessfully.");
+    }
+
 }
