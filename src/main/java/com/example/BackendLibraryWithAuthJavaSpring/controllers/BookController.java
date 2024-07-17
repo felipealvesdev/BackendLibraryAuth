@@ -32,6 +32,19 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookRepository.save(book));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateBookById(@PathVariable(value = "id") String id,
+                                                   @RequestBody BookDTO bookDTO) {
+        Optional<Book> bookModel = bookRepository.findById(id);
+        if(bookModel.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Book not found.");
+        }
+        var book = bookModel.get();
+        BeanUtils.copyProperties(bookDTO, book);
+        bookRepository.save(book);
+        return ResponseEntity.status(HttpStatus.OK).body("Book updated successfully.");
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteBookById(@PathVariable(value = "id") String id) {
         Optional<Book> book = bookRepository.findById(id);
