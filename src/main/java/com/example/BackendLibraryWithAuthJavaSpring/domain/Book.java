@@ -18,6 +18,8 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    @Column(nullable = false)
+    private String title;
     @Column(nullable = false, unique = true)
     private String author;
     @Column(nullable = false)
